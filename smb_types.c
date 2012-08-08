@@ -1,0 +1,2145 @@
+/* smb_types.c
+ * By Ron Bowes
+ * Created September 1, 2008
+ *
+ * (See LICENSE.txt)
+ */
+
+#include <stdio.h>
+
+#include "smb_types.h"
+
+void smb_print_capabilities(SMB_CAPABILITIES_t capabilities)
+{
+	if(capabilities & CAP_EXTENDED_SECURITY)
+		printf("<extended security>");
+	if(capabilities & CAP_COMPRESSED_DATA)
+		printf("<compressed data>");
+	if(capabilities & CAP_BULK_TRANSFER)
+		printf("<bulk transfer>");
+	if(capabilities & CAP_UNIX)
+		printf("<unix>");
+	if(capabilities & CAP_LARGE_WRITEX)
+		printf("<large writex>");
+	if(capabilities & CAP_LARGE_READX)
+		printf("<large readx>");
+	if(capabilities & CAP_INFOLEVEL_PASSTHROUGH)
+		printf("<infolevel passthrough>");
+	if(capabilities & CAP_DFS)
+		printf("<dfs>");
+	if(capabilities & CAP_NT_FIND)
+		printf("<nt find>");
+	if(capabilities & CAP_LOCK_AND_READ)
+		printf("<lock and read>");
+	if(capabilities & CAP_LEVEL_II_OPLOCKS)
+		printf("<level ii oplocks>");
+	if(capabilities & CAP_STATUS32)
+		printf("<nt errors>");
+	if(capabilities & CAP_RPC_REMOTE_APIS)
+		printf("<rpc remote apis>");
+	if(capabilities & CAP_NT_SMBS)
+		printf("<nt smbs>");
+	if(capabilities & CAP_LARGE_FILES)
+		printf("<large files>");
+	if(capabilities & CAP_UNICODE)
+		printf("<unicode>");
+	if(capabilities & CAP_MPX_MODE)
+		printf("<mpx mode>");
+	if(capabilities & CAP_RAW_MODE)
+		printf("<raw mode>");
+}
+
+void smb_print_flags(SMB_FLAGS_t flags)
+{
+	if(flags & SMB_FLAGS_SERVER_TO_REDIR)
+		printf("<response>");
+	else
+		printf("<request>");
+	if(flags & SMB_FLAGS_REQUEST_BATCH_OPLOCK)
+		printf("<batch oplock>");
+	if(flags & SMB_FLAGS_REQUEST_OPLOCK)
+		printf("<request oplock>");
+	if(flags & SMB_FLAGS_CANONICAL_PATHNAMES)
+		printf("<canonical paths>");
+	if(flags & SMB_FLAGS_CASELESS_PATHNAMES)
+		printf("<caseless paths>");
+	if(flags & SMB_FLAGS_RESERVED)
+		printf("<reserved>");
+	if(flags & SMB_FLAGS_CLIENT_BUF_AVAIL)
+		printf("<client_buf avail>");
+	if(flags & SMB_FLAGS_SUPPORT_LOCKREAD)
+		printf("<lockread>");
+}
+
+void smb_print_flags2(SMB_FLAGS2_t flags2)
+{
+	if(flags2 & SMB_FLAGS2_UNICODE_STRINGS)
+		printf("<unicode>");
+	if(flags2 & SMB_FLAGS2_32BIT_STATUS)
+		printf("<NT errors>");
+	if(flags2 & SMB_FLAGS2_READ_IF_EXECUTE)
+		printf("<read if execute>");
+	if(flags2 & SMB_FLAGS2_DFS_PATHNAME)
+		printf("<dfs>");
+	if(flags2 & SMB_FLAGS2_EXTENDED_SECURITY)
+		printf("<extended security>");
+	if(flags2 & SMB_FLAGS2_RESERVED1)
+		printf("<reserved1>");
+	if(flags2 & SMB_FLAGS2_RESERVED2)
+		printf("<reserved2>");
+	if(flags2 & SMB_FLAGS2_RESERVED3)
+		printf("<reserved3>");
+	if(flags2 & SMB_FLAGS2_RESERVED4)
+		printf("<reserved4>");
+	if(flags2 & SMB_FLAGS2_IS_LONG_NAME)
+		printf("<is long name>");
+	if(flags2 & SMB_FLAGS2_RESERVED5)
+		printf("<reserved5>");
+	if(flags2 & SMB_FLAGS2_RESERVED6)
+		printf("<reserved6>");
+	if(flags2 & SMB_FLAGS2_RESERVED7)
+		printf("<reserved7>");
+	if(flags2 & SMB_FLAGS2_SECURITY_SIGNATURE)
+		printf("<signatures>");
+	if(flags2 & SMB_FLAGS2_EAS)
+		printf("<extended attributes>");
+	if(flags2 & SMB_FLAGS2_KNOWS_LONG_NAMES)
+		printf("<knows long names>");
+}
+
+char *smb_get_error_nt(SMB_t *smb)
+{
+	switch(smb->header.status)
+	{
+		case NT_STATUS_OK:
+			return "NT_STATUS_OK";
+		break;
+
+		case NT_STATUS_BUFFER_OVERFLOW:
+			return "NT_STATUS_BUFFER_OVERFLOW";
+		break;
+
+		case NT_STATUS_UNSUCCESSFUL:
+			return "NT_STATUS_UNSUCCESSFUL";
+		break;
+
+		case NT_STATUS_NOT_IMPLEMENTED:
+			return "NT_STATUS_NOT_IMPLEMENTED";
+		break;
+
+		case NT_STATUS_INVALID_INFO_CLASS:
+			return "NT_STATUS_INVALID_INFO_CLASS";
+		break;
+
+		case NT_STATUS_INFO_LENGTH_MISMATCH:
+			return "NT_STATUS_INFO_LENGTH_MISMATCH";
+		break;
+
+		case NT_STATUS_ACCESS_VIOLATION:
+			return "NT_STATUS_ACCESS_VIOLATION";
+		break;
+
+		case NT_STATUS_IN_PAGE_ERROR:
+			return "NT_STATUS_IN_PAGE_ERROR";
+		break;
+
+		case NT_STATUS_PAGEFILE_QUOTA:
+			return "NT_STATUS_PAGEFILE_QUOTA";
+		break;
+
+		case NT_STATUS_INVALID_HANDLE:
+			return "NT_STATUS_INVALID_HANDLE";
+		break;
+
+		case NT_STATUS_BAD_INITIAL_STACK:
+			return "NT_STATUS_BAD_INITIAL_STACK";
+		break;
+
+		case NT_STATUS_BAD_INITIAL_PC:
+			return "NT_STATUS_BAD_INITIAL_PC";
+		break;
+
+		case NT_STATUS_INVALID_CID:
+			return "NT_STATUS_INVALID_CID";
+		break;
+
+		case NT_STATUS_TIMER_NOT_CANCELED:
+			return "NT_STATUS_TIMER_NOT_CANCELED";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER:
+			return "NT_STATUS_INVALID_PARAMETER";
+		break;
+
+		case NT_STATUS_NO_SUCH_DEVICE:
+			return "NT_STATUS_NO_SUCH_DEVICE";
+		break;
+
+		case NT_STATUS_NO_SUCH_FILE:
+			return "NT_STATUS_NO_SUCH_FILE";
+		break;
+
+		case NT_STATUS_INVALID_DEVICE_REQUEST:
+			return "NT_STATUS_INVALID_DEVICE_REQUEST";
+		break;
+
+		case NT_STATUS_END_OF_FILE:
+			return "NT_STATUS_END_OF_FILE";
+		break;
+
+		case NT_STATUS_WRONG_VOLUME:
+			return "NT_STATUS_WRONG_VOLUME";
+		break;
+
+		case NT_STATUS_NO_MEDIA_IN_DEVICE:
+			return "NT_STATUS_NO_MEDIA_IN_DEVICE";
+		break;
+
+		case NT_STATUS_UNRECOGNIZED_MEDIA:
+			return "NT_STATUS_UNRECOGNIZED_MEDIA";
+		break;
+
+		case NT_STATUS_NONEXISTENT_SECTOR:
+			return "NT_STATUS_NONEXISTENT_SECTOR";
+		break;
+
+		case NT_STATUS_MORE_PROCESSING_REQUIRED:
+			return "NT_STATUS_MORE_PROCESSING_REQUIRED";
+		break;
+
+		case NT_STATUS_NO_MEMORY:
+			return "NT_STATUS_NO_MEMORY";
+		break;
+
+		case NT_STATUS_CONFLICTING_ADDRESSES:
+			return "NT_STATUS_CONFLICTING_ADDRESSES";
+		break;
+
+		case NT_STATUS_NOT_MAPPED_VIEW:
+			return "NT_STATUS_NOT_MAPPED_VIEW";
+		break;
+
+		case NT_STATUS_UNABLE_TO_FREE_VM:
+			return "NT_STATUS_UNABLE_TO_FREE_VM";
+		break;
+
+		case NT_STATUS_UNABLE_TO_DELETE_SECTION:
+			return "NT_STATUS_UNABLE_TO_DELETE_SECTION";
+		break;
+
+		case NT_STATUS_INVALID_SYSTEM_SERVICE:
+			return "NT_STATUS_INVALID_SYSTEM_SERVICE";
+		break;
+
+		case NT_STATUS_ILLEGAL_INSTRUCTION:
+			return "NT_STATUS_ILLEGAL_INSTRUCTION";
+		break;
+
+		case NT_STATUS_INVALID_LOCK_SEQUENCE:
+			return "NT_STATUS_INVALID_LOCK_SEQUENCE";
+		break;
+
+		case NT_STATUS_INVALID_VIEW_SIZE:
+			return "NT_STATUS_INVALID_VIEW_SIZE";
+		break;
+
+		case NT_STATUS_INVALID_FILE_FOR_SECTION:
+			return "NT_STATUS_INVALID_FILE_FOR_SECTION";
+		break;
+
+		case NT_STATUS_ALREADY_COMMITTED:
+			return "NT_STATUS_ALREADY_COMMITTED";
+		break;
+
+		case NT_STATUS_ACCESS_DENIED:
+			return "NT_STATUS_ACCESS_DENIED";
+		break;
+
+		case NT_STATUS_BUFFER_TOO_SMALL:
+			return "NT_STATUS_BUFFER_TOO_SMALL";
+		break;
+
+		case NT_STATUS_OBJECT_TYPE_MISMATCH:
+			return "NT_STATUS_OBJECT_TYPE_MISMATCH";
+		break;
+
+		case NT_STATUS_NONCONTINUABLE_EXCEPTION:
+			return "NT_STATUS_NONCONTINUABLE_EXCEPTION";
+		break;
+
+		case NT_STATUS_INVALID_DISPOSITION:
+			return "NT_STATUS_INVALID_DISPOSITION";
+		break;
+
+		case NT_STATUS_UNWIND:
+			return "NT_STATUS_UNWIND";
+		break;
+
+		case NT_STATUS_BAD_STACK:
+			return "NT_STATUS_BAD_STACK";
+		break;
+
+		case NT_STATUS_INVALID_UNWIND_TARGET:
+			return "NT_STATUS_INVALID_UNWIND_TARGET";
+		break;
+
+		case NT_STATUS_NOT_LOCKED:
+			return "NT_STATUS_NOT_LOCKED";
+		break;
+
+		case NT_STATUS_PARITY_ERROR:
+			return "NT_STATUS_PARITY_ERROR";
+		break;
+
+		case NT_STATUS_UNABLE_TO_DECOMMIT_VM:
+			return "NT_STATUS_UNABLE_TO_DECOMMIT_VM";
+		break;
+
+		case NT_STATUS_NOT_COMMITTED:
+			return "NT_STATUS_NOT_COMMITTED";
+		break;
+
+		case NT_STATUS_INVALID_PORT_ATTRIBUTES:
+			return "NT_STATUS_INVALID_PORT_ATTRIBUTES";
+		break;
+
+		case NT_STATUS_PORT_MESSAGE_TOO_LONG:
+			return "NT_STATUS_PORT_MESSAGE_TOO_LONG";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_MIX:
+			return "NT_STATUS_INVALID_PARAMETER_MIX";
+		break;
+
+		case NT_STATUS_INVALID_QUOTA_LOWER:
+			return "NT_STATUS_INVALID_QUOTA_LOWER";
+		break;
+
+		case NT_STATUS_DISK_CORRUPT_ERROR:
+			return "NT_STATUS_DISK_CORRUPT_ERROR";
+		break;
+
+		case NT_STATUS_OBJECT_NAME_INVALID:
+			return "NT_STATUS_OBJECT_NAME_INVALID";
+		break;
+
+		case NT_STATUS_OBJECT_NAME_NOT_FOUND:
+			return "NT_STATUS_OBJECT_NAME_NOT_FOUND";
+		break;
+
+		case NT_STATUS_OBJECT_NAME_COLLISION:
+			return "NT_STATUS_OBJECT_NAME_COLLISION";
+		break;
+
+		case NT_STATUS_HANDLE_NOT_WAITABLE:
+			return "NT_STATUS_HANDLE_NOT_WAITABLE";
+		break;
+
+		case NT_STATUS_PORT_DISCONNECTED:
+			return "NT_STATUS_PORT_DISCONNECTED";
+		break;
+
+		case NT_STATUS_DEVICE_ALREADY_ATTACHED:
+			return "NT_STATUS_DEVICE_ALREADY_ATTACHED";
+		break;
+
+		case NT_STATUS_OBJECT_PATH_INVALID:
+			return "NT_STATUS_OBJECT_PATH_INVALID";
+		break;
+
+		case NT_STATUS_OBJECT_PATH_NOT_FOUND:
+			return "NT_STATUS_OBJECT_PATH_NOT_FOUND";
+		break;
+
+		case NT_STATUS_OBJECT_PATH_SYNTAX_BAD:
+			return "NT_STATUS_OBJECT_PATH_SYNTAX_BAD";
+		break;
+
+		case NT_STATUS_DATA_OVERRUN:
+			return "NT_STATUS_DATA_OVERRUN";
+		break;
+
+		case NT_STATUS_DATA_LATE_ERROR:
+			return "NT_STATUS_DATA_LATE_ERROR";
+		break;
+
+		case NT_STATUS_DATA_ERROR:
+			return "NT_STATUS_DATA_ERROR";
+		break;
+
+		case NT_STATUS_CRC_ERROR:
+			return "NT_STATUS_CRC_ERROR";
+		break;
+
+		case NT_STATUS_SECTION_TOO_BIG:
+			return "NT_STATUS_SECTION_TOO_BIG";
+		break;
+
+		case NT_STATUS_PORT_CONNECTION_REFUSED:
+			return "NT_STATUS_PORT_CONNECTION_REFUSED";
+		break;
+
+		case NT_STATUS_INVALID_PORT_HANDLE:
+			return "NT_STATUS_INVALID_PORT_HANDLE";
+		break;
+
+		case NT_STATUS_SHARING_VIOLATION:
+			return "NT_STATUS_SHARING_VIOLATION";
+		break;
+
+		case NT_STATUS_QUOTA_EXCEEDED:
+			return "NT_STATUS_QUOTA_EXCEEDED";
+		break;
+
+		case NT_STATUS_INVALID_PAGE_PROTECTION:
+			return "NT_STATUS_INVALID_PAGE_PROTECTION";
+		break;
+
+		case NT_STATUS_MUTANT_NOT_OWNED:
+			return "NT_STATUS_MUTANT_NOT_OWNED";
+		break;
+
+		case NT_STATUS_SEMAPHORE_LIMIT_EXCEEDED:
+			return "NT_STATUS_SEMAPHORE_LIMIT_EXCEEDED";
+		break;
+
+		case NT_STATUS_PORT_ALREADY_SET:
+			return "NT_STATUS_PORT_ALREADY_SET";
+		break;
+
+		case NT_STATUS_SECTION_NOT_IMAGE:
+			return "NT_STATUS_SECTION_NOT_IMAGE";
+		break;
+
+		case NT_STATUS_SUSPEND_COUNT_EXCEEDED:
+			return "NT_STATUS_SUSPEND_COUNT_EXCEEDED";
+		break;
+
+		case NT_STATUS_THREAD_IS_TERMINATING:
+			return "NT_STATUS_THREAD_IS_TERMINATING";
+		break;
+
+		case NT_STATUS_BAD_WORKING_SET_LIMIT:
+			return "NT_STATUS_BAD_WORKING_SET_LIMIT";
+		break;
+
+		case NT_STATUS_INCOMPATIBLE_FILE_MAP:
+			return "NT_STATUS_INCOMPATIBLE_FILE_MAP";
+		break;
+
+		case NT_STATUS_SECTION_PROTECTION:
+			return "NT_STATUS_SECTION_PROTECTION";
+		break;
+
+		case NT_STATUS_EAS_NOT_SUPPORTED:
+			return "NT_STATUS_EAS_NOT_SUPPORTED";
+		break;
+
+		case NT_STATUS_EA_TOO_LARGE:
+			return "NT_STATUS_EA_TOO_LARGE";
+		break;
+
+		case NT_STATUS_NONEXISTENT_EA_ENTRY:
+			return "NT_STATUS_NONEXISTENT_EA_ENTRY";
+		break;
+
+		case NT_STATUS_NO_EAS_ON_FILE:
+			return "NT_STATUS_NO_EAS_ON_FILE";
+		break;
+
+		case NT_STATUS_EA_CORRUPT_ERROR:
+			return "NT_STATUS_EA_CORRUPT_ERROR";
+		break;
+
+		case NT_STATUS_FILE_LOCK_CONFLICT:
+			return "NT_STATUS_FILE_LOCK_CONFLICT";
+		break;
+
+		case NT_STATUS_LOCK_NOT_GRANTED:
+			return "NT_STATUS_LOCK_NOT_GRANTED";
+		break;
+
+		case NT_STATUS_DELETE_PENDING:
+			return "NT_STATUS_DELETE_PENDING";
+		break;
+
+		case NT_STATUS_CTL_FILE_NOT_SUPPORTED:
+			return "NT_STATUS_CTL_FILE_NOT_SUPPORTED";
+		break;
+
+		case NT_STATUS_UNKNOWN_REVISION:
+			return "NT_STATUS_UNKNOWN_REVISION";
+		break;
+
+		case NT_STATUS_REVISION_MISMATCH:
+			return "NT_STATUS_REVISION_MISMATCH";
+		break;
+
+		case NT_STATUS_INVALID_OWNER:
+			return "NT_STATUS_INVALID_OWNER";
+		break;
+
+		case NT_STATUS_INVALID_PRIMARY_GROUP:
+			return "NT_STATUS_INVALID_PRIMARY_GROUP";
+		break;
+
+		case NT_STATUS_NO_IMPERSONATION_TOKEN:
+			return "NT_STATUS_NO_IMPERSONATION_TOKEN";
+		break;
+
+		case NT_STATUS_CANT_DISABLE_MANDATORY:
+			return "NT_STATUS_CANT_DISABLE_MANDATORY";
+		break;
+
+		case NT_STATUS_NO_LOGON_SERVERS:
+			return "NT_STATUS_NO_LOGON_SERVERS";
+		break;
+
+		case NT_STATUS_NO_SUCH_LOGON_SESSION:
+			return "NT_STATUS_NO_SUCH_LOGON_SESSION";
+		break;
+
+		case NT_STATUS_NO_SUCH_PRIVILEGE:
+			return "NT_STATUS_NO_SUCH_PRIVILEGE";
+		break;
+
+		case NT_STATUS_PRIVILEGE_NOT_HELD:
+			return "NT_STATUS_PRIVILEGE_NOT_HELD";
+		break;
+
+		case NT_STATUS_INVALID_ACCOUNT_NAME:
+			return "NT_STATUS_INVALID_ACCOUNT_NAME";
+		break;
+
+		case NT_STATUS_USER_EXISTS:
+			return "NT_STATUS_USER_EXISTS";
+		break;
+
+		case NT_STATUS_NO_SUCH_USER:
+			return "NT_STATUS_NO_SUCH_USER";
+		break;
+
+		case NT_STATUS_GROUP_EXISTS:
+			return "NT_STATUS_GROUP_EXISTS";
+		break;
+
+		case NT_STATUS_NO_SUCH_GROUP:
+			return "NT_STATUS_NO_SUCH_GROUP";
+		break;
+
+		case NT_STATUS_MEMBER_IN_GROUP:
+			return "NT_STATUS_MEMBER_IN_GROUP";
+		break;
+
+		case NT_STATUS_MEMBER_NOT_IN_GROUP:
+			return "NT_STATUS_MEMBER_NOT_IN_GROUP";
+		break;
+
+		case NT_STATUS_LAST_ADMIN:
+			return "NT_STATUS_LAST_ADMIN";
+		break;
+
+		case NT_STATUS_WRONG_PASSWORD:
+			return "NT_STATUS_WRONG_PASSWORD";
+		break;
+
+		case NT_STATUS_ILL_FORMED_PASSWORD:
+			return "NT_STATUS_ILL_FORMED_PASSWORD";
+		break;
+
+		case NT_STATUS_PASSWORD_RESTRICTION:
+			return "NT_STATUS_PASSWORD_RESTRICTION";
+		break;
+
+		case NT_STATUS_LOGON_FAILURE:
+			return "NT_STATUS_LOGON_FAILURE";
+		break;
+
+		case NT_STATUS_ACCOUNT_RESTRICTION:
+			return "NT_STATUS_ACCOUNT_RESTRICTION";
+		break;
+
+		case NT_STATUS_INVALID_LOGON_HOURS:
+			return "NT_STATUS_INVALID_LOGON_HOURS";
+		break;
+
+		case NT_STATUS_INVALID_WORKSTATION:
+			return "NT_STATUS_INVALID_WORKSTATION";
+		break;
+
+		case NT_STATUS_PASSWORD_EXPIRED:
+			return "NT_STATUS_PASSWORD_EXPIRED";
+		break;
+
+		case NT_STATUS_ACCOUNT_DISABLED:
+			return "NT_STATUS_ACCOUNT_DISABLED";
+		break;
+
+		case NT_STATUS_NONE_MAPPED:
+			return "NT_STATUS_NONE_MAPPED";
+		break;
+
+		case NT_STATUS_TOO_MANY_LUIDS_REQUESTED:
+			return "NT_STATUS_TOO_MANY_LUIDS_REQUESTED";
+		break;
+
+		case NT_STATUS_LUIDS_EXHAUSTED:
+			return "NT_STATUS_LUIDS_EXHAUSTED";
+		break;
+
+		case NT_STATUS_INVALID_SUB_AUTHORITY:
+			return "NT_STATUS_INVALID_SUB_AUTHORITY";
+		break;
+
+		case NT_STATUS_INVALID_ACL:
+			return "NT_STATUS_INVALID_ACL";
+		break;
+
+		case NT_STATUS_INVALID_SID:
+			return "NT_STATUS_INVALID_SID";
+		break;
+
+		case NT_STATUS_INVALID_SECURITY_DESCR:
+			return "NT_STATUS_INVALID_SECURITY_DESCR";
+		break;
+
+		case NT_STATUS_PROCEDURE_NOT_FOUND:
+			return "NT_STATUS_PROCEDURE_NOT_FOUND";
+		break;
+
+		case NT_STATUS_INVALID_IMAGE_FORMAT:
+			return "NT_STATUS_INVALID_IMAGE_FORMAT";
+		break;
+
+		case NT_STATUS_NO_TOKEN:
+			return "NT_STATUS_NO_TOKEN";
+		break;
+
+		case NT_STATUS_BAD_INHERITANCE_ACL:
+			return "NT_STATUS_BAD_INHERITANCE_ACL";
+		break;
+
+		case NT_STATUS_RANGE_NOT_LOCKED:
+			return "NT_STATUS_RANGE_NOT_LOCKED";
+		break;
+
+		case NT_STATUS_DISK_FULL:
+			return "NT_STATUS_DISK_FULL";
+		break;
+
+		case NT_STATUS_SERVER_DISABLED:
+			return "NT_STATUS_SERVER_DISABLED";
+		break;
+
+		case NT_STATUS_SERVER_NOT_DISABLED:
+			return "NT_STATUS_SERVER_NOT_DISABLED";
+		break;
+
+		case NT_STATUS_TOO_MANY_GUIDS_REQUESTED:
+			return "NT_STATUS_TOO_MANY_GUIDS_REQUESTED";
+		break;
+
+		case NT_STATUS_GUIDS_EXHAUSTED:
+			return "NT_STATUS_GUIDS_EXHAUSTED";
+		break;
+
+		case NT_STATUS_INVALID_ID_AUTHORITY:
+			return "NT_STATUS_INVALID_ID_AUTHORITY";
+		break;
+
+		case NT_STATUS_AGENTS_EXHAUSTED:
+			return "NT_STATUS_AGENTS_EXHAUSTED";
+		break;
+
+		case NT_STATUS_INVALID_VOLUME_LABEL:
+			return "NT_STATUS_INVALID_VOLUME_LABEL";
+		break;
+
+		case NT_STATUS_SECTION_NOT_EXTENDED:
+			return "NT_STATUS_SECTION_NOT_EXTENDED";
+		break;
+
+		case NT_STATUS_NOT_MAPPED_DATA:
+			return "NT_STATUS_NOT_MAPPED_DATA";
+		break;
+
+		case NT_STATUS_RESOURCE_DATA_NOT_FOUND:
+			return "NT_STATUS_RESOURCE_DATA_NOT_FOUND";
+		break;
+
+		case NT_STATUS_RESOURCE_TYPE_NOT_FOUND:
+			return "NT_STATUS_RESOURCE_TYPE_NOT_FOUND";
+		break;
+
+		case NT_STATUS_RESOURCE_NAME_NOT_FOUND:
+			return "NT_STATUS_RESOURCE_NAME_NOT_FOUND";
+		break;
+
+		case NT_STATUS_ARRAY_BOUNDS_EXCEEDED:
+			return "NT_STATUS_ARRAY_BOUNDS_EXCEEDED";
+		break;
+
+		case NT_STATUS_FLOAT_DENORMAL_OPERAND:
+			return "NT_STATUS_FLOAT_DENORMAL_OPERAND";
+		break;
+
+		case NT_STATUS_FLOAT_DIVIDE_BY_ZERO:
+			return "NT_STATUS_FLOAT_DIVIDE_BY_ZERO";
+		break;
+
+		case NT_STATUS_FLOAT_INEXACT_RESULT:
+			return "NT_STATUS_FLOAT_INEXACT_RESULT";
+		break;
+
+		case NT_STATUS_FLOAT_INVALID_OPERATION:
+			return "NT_STATUS_FLOAT_INVALID_OPERATION";
+		break;
+
+		case NT_STATUS_FLOAT_OVERFLOW:
+			return "NT_STATUS_FLOAT_OVERFLOW";
+		break;
+
+		case NT_STATUS_FLOAT_STACK_CHECK:
+			return "NT_STATUS_FLOAT_STACK_CHECK";
+		break;
+
+		case NT_STATUS_FLOAT_UNDERFLOW:
+			return "NT_STATUS_FLOAT_UNDERFLOW";
+		break;
+
+		case NT_STATUS_INTEGER_DIVIDE_BY_ZERO:
+			return "NT_STATUS_INTEGER_DIVIDE_BY_ZERO";
+		break;
+
+		case NT_STATUS_INTEGER_OVERFLOW:
+			return "NT_STATUS_INTEGER_OVERFLOW";
+		break;
+
+		case NT_STATUS_PRIVILEGED_INSTRUCTION:
+			return "NT_STATUS_PRIVILEGED_INSTRUCTION";
+		break;
+
+		case NT_STATUS_TOO_MANY_PAGING_FILES:
+			return "NT_STATUS_TOO_MANY_PAGING_FILES";
+		break;
+
+		case NT_STATUS_FILE_INVALID:
+			return "NT_STATUS_FILE_INVALID";
+		break;
+
+		case NT_STATUS_ALLOTTED_SPACE_EXCEEDED:
+			return "NT_STATUS_ALLOTTED_SPACE_EXCEEDED";
+		break;
+
+		case NT_STATUS_INSUFFICIENT_RESOURCES:
+			return "NT_STATUS_INSUFFICIENT_RESOURCES";
+		break;
+
+		case NT_STATUS_DFS_EXIT_PATH_FOUND:
+			return "NT_STATUS_DFS_EXIT_PATH_FOUND";
+		break;
+
+		case NT_STATUS_DEVICE_DATA_ERROR:
+			return "NT_STATUS_DEVICE_DATA_ERROR";
+		break;
+
+		case NT_STATUS_DEVICE_NOT_CONNECTED:
+			return "NT_STATUS_DEVICE_NOT_CONNECTED";
+		break;
+
+		case NT_STATUS_DEVICE_POWER_FAILURE:
+			return "NT_STATUS_DEVICE_POWER_FAILURE";
+		break;
+
+		case NT_STATUS_FREE_VM_NOT_AT_BASE:
+			return "NT_STATUS_FREE_VM_NOT_AT_BASE";
+		break;
+
+		case NT_STATUS_MEMORY_NOT_ALLOCATED:
+			return "NT_STATUS_MEMORY_NOT_ALLOCATED";
+		break;
+
+		case NT_STATUS_WORKING_SET_QUOTA:
+			return "NT_STATUS_WORKING_SET_QUOTA";
+		break;
+
+		case NT_STATUS_MEDIA_WRITE_PROTECTED:
+			return "NT_STATUS_MEDIA_WRITE_PROTECTED";
+		break;
+
+		case NT_STATUS_DEVICE_NOT_READY:
+			return "NT_STATUS_DEVICE_NOT_READY";
+		break;
+
+		case NT_STATUS_INVALID_GROUP_ATTRIBUTES:
+			return "NT_STATUS_INVALID_GROUP_ATTRIBUTES";
+		break;
+
+		case NT_STATUS_BAD_IMPERSONATION_LEVEL:
+			return "NT_STATUS_BAD_IMPERSONATION_LEVEL";
+		break;
+
+		case NT_STATUS_CANT_OPEN_ANONYMOUS:
+			return "NT_STATUS_CANT_OPEN_ANONYMOUS";
+		break;
+
+		case NT_STATUS_BAD_VALIDATION_CLASS:
+			return "NT_STATUS_BAD_VALIDATION_CLASS";
+		break;
+
+		case NT_STATUS_BAD_TOKEN_TYPE:
+			return "NT_STATUS_BAD_TOKEN_TYPE";
+		break;
+
+		case NT_STATUS_BAD_MASTER_BOOT_RECORD:
+			return "NT_STATUS_BAD_MASTER_BOOT_RECORD";
+		break;
+
+		case NT_STATUS_INSTRUCTION_MISALIGNMENT:
+			return "NT_STATUS_INSTRUCTION_MISALIGNMENT";
+		break;
+
+		case NT_STATUS_INSTANCE_NOT_AVAILABLE:
+			return "NT_STATUS_INSTANCE_NOT_AVAILABLE";
+		break;
+
+		case NT_STATUS_PIPE_NOT_AVAILABLE:
+			return "NT_STATUS_PIPE_NOT_AVAILABLE";
+		break;
+
+		case NT_STATUS_INVALID_PIPE_STATE:
+			return "NT_STATUS_INVALID_PIPE_STATE";
+		break;
+
+		case NT_STATUS_PIPE_BUSY:
+			return "NT_STATUS_PIPE_BUSY";
+		break;
+
+		case NT_STATUS_ILLEGAL_FUNCTION:
+			return "NT_STATUS_ILLEGAL_FUNCTION";
+		break;
+
+		case NT_STATUS_PIPE_DISCONNECTED:
+			return "NT_STATUS_PIPE_DISCONNECTED";
+		break;
+
+		case NT_STATUS_PIPE_CLOSING:
+			return "NT_STATUS_PIPE_CLOSING";
+		break;
+
+		case NT_STATUS_PIPE_CONNECTED:
+			return "NT_STATUS_PIPE_CONNECTED";
+		break;
+
+		case NT_STATUS_PIPE_LISTENING:
+			return "NT_STATUS_PIPE_LISTENING";
+		break;
+
+		case NT_STATUS_INVALID_READ_MODE:
+			return "NT_STATUS_INVALID_READ_MODE";
+		break;
+
+		case NT_STATUS_IO_TIMEOUT:
+			return "NT_STATUS_IO_TIMEOUT";
+		break;
+
+		case NT_STATUS_FILE_FORCED_CLOSED:
+			return "NT_STATUS_FILE_FORCED_CLOSED";
+		break;
+
+		case NT_STATUS_PROFILING_NOT_STARTED:
+			return "NT_STATUS_PROFILING_NOT_STARTED";
+		break;
+
+		case NT_STATUS_PROFILING_NOT_STOPPED:
+			return "NT_STATUS_PROFILING_NOT_STOPPED";
+		break;
+
+		case NT_STATUS_COULD_NOT_INTERPRET:
+			return "NT_STATUS_COULD_NOT_INTERPRET";
+		break;
+
+		case NT_STATUS_FILE_IS_A_DIRECTORY:
+			return "NT_STATUS_FILE_IS_A_DIRECTORY";
+		break;
+
+		case NT_STATUS_NOT_SUPPORTED:
+			return "NT_STATUS_NOT_SUPPORTED";
+		break;
+
+		case NT_STATUS_REMOTE_NOT_LISTENING:
+			return "NT_STATUS_REMOTE_NOT_LISTENING";
+		break;
+
+		case NT_STATUS_DUPLICATE_NAME:
+			return "NT_STATUS_DUPLICATE_NAME";
+		break;
+
+		case NT_STATUS_BAD_NETWORK_PATH:
+			return "NT_STATUS_BAD_NETWORK_PATH";
+		break;
+
+		case NT_STATUS_NETWORK_BUSY:
+			return "NT_STATUS_NETWORK_BUSY";
+		break;
+
+		case NT_STATUS_DEVICE_DOES_NOT_EXIST:
+			return "NT_STATUS_DEVICE_DOES_NOT_EXIST";
+		break;
+
+		case NT_STATUS_TOO_MANY_COMMANDS:
+			return "NT_STATUS_TOO_MANY_COMMANDS";
+		break;
+
+		case NT_STATUS_ADAPTER_HARDWARE_ERROR:
+			return "NT_STATUS_ADAPTER_HARDWARE_ERROR";
+		break;
+
+		case NT_STATUS_INVALID_NETWORK_RESPONSE:
+			return "NT_STATUS_INVALID_NETWORK_RESPONSE";
+		break;
+
+		case NT_STATUS_UNEXPECTED_NETWORK_ERROR:
+			return "NT_STATUS_UNEXPECTED_NETWORK_ERROR";
+		break;
+
+		case NT_STATUS_BAD_REMOTE_ADAPTER:
+			return "NT_STATUS_BAD_REMOTE_ADAPTER";
+		break;
+
+		case NT_STATUS_PRINT_QUEUE_FULL:
+			return "NT_STATUS_PRINT_QUEUE_FULL";
+		break;
+
+		case NT_STATUS_NO_SPOOL_SPACE:
+			return "NT_STATUS_NO_SPOOL_SPACE";
+		break;
+
+		case NT_STATUS_PRINT_CANCELLED:
+			return "NT_STATUS_PRINT_CANCELLED";
+		break;
+
+		case NT_STATUS_NETWORK_NAME_DELETED:
+			return "NT_STATUS_NETWORK_NAME_DELETED";
+		break;
+
+		case NT_STATUS_NETWORK_ACCESS_DENIED:
+			return "NT_STATUS_NETWORK_ACCESS_DENIED";
+		break;
+
+		case NT_STATUS_BAD_DEVICE_TYPE:
+			return "NT_STATUS_BAD_DEVICE_TYPE";
+		break;
+
+		case NT_STATUS_BAD_NETWORK_NAME:
+			return "NT_STATUS_BAD_NETWORK_NAME";
+		break;
+
+		case NT_STATUS_TOO_MANY_NAMES:
+			return "NT_STATUS_TOO_MANY_NAMES";
+		break;
+
+		case NT_STATUS_TOO_MANY_SESSIONS:
+			return "NT_STATUS_TOO_MANY_SESSIONS";
+		break;
+
+		case NT_STATUS_SHARING_PAUSED:
+			return "NT_STATUS_SHARING_PAUSED";
+		break;
+
+		case NT_STATUS_REQUEST_NOT_ACCEPTED:
+			return "NT_STATUS_REQUEST_NOT_ACCEPTED";
+		break;
+
+		case NT_STATUS_REDIRECTOR_PAUSED:
+			return "NT_STATUS_REDIRECTOR_PAUSED";
+		break;
+
+		case NT_STATUS_NET_WRITE_FAULT:
+			return "NT_STATUS_NET_WRITE_FAULT";
+		break;
+
+		case NT_STATUS_PROFILING_AT_LIMIT:
+			return "NT_STATUS_PROFILING_AT_LIMIT";
+		break;
+
+		case NT_STATUS_NOT_SAME_DEVICE:
+			return "NT_STATUS_NOT_SAME_DEVICE";
+		break;
+
+		case NT_STATUS_FILE_RENAMED:
+			return "NT_STATUS_FILE_RENAMED";
+		break;
+
+		case NT_STATUS_VIRTUAL_CIRCUIT_CLOSED:
+			return "NT_STATUS_VIRTUAL_CIRCUIT_CLOSED";
+		break;
+
+		case NT_STATUS_NO_SECURITY_ON_OBJECT:
+			return "NT_STATUS_NO_SECURITY_ON_OBJECT";
+		break;
+
+		case NT_STATUS_CANT_WAIT:
+			return "NT_STATUS_CANT_WAIT";
+		break;
+
+		case NT_STATUS_PIPE_EMPTY:
+			return "NT_STATUS_PIPE_EMPTY";
+		break;
+
+		case NT_STATUS_CANT_ACCESS_DOMAIN_INFO:
+			return "NT_STATUS_CANT_ACCESS_DOMAIN_INFO";
+		break;
+
+		case NT_STATUS_CANT_TERMINATE_SELF:
+			return "NT_STATUS_CANT_TERMINATE_SELF";
+		break;
+
+		case NT_STATUS_INVALID_SERVER_STATE:
+			return "NT_STATUS_INVALID_SERVER_STATE";
+		break;
+
+		case NT_STATUS_INVALID_DOMAIN_STATE:
+			return "NT_STATUS_INVALID_DOMAIN_STATE";
+		break;
+
+		case NT_STATUS_INVALID_DOMAIN_ROLE:
+			return "NT_STATUS_INVALID_DOMAIN_ROLE";
+		break;
+
+		case NT_STATUS_NO_SUCH_DOMAIN:
+			return "NT_STATUS_NO_SUCH_DOMAIN";
+		break;
+
+		case NT_STATUS_DOMAIN_EXISTS:
+			return "NT_STATUS_DOMAIN_EXISTS";
+		break;
+
+		case NT_STATUS_DOMAIN_LIMIT_EXCEEDED:
+			return "NT_STATUS_DOMAIN_LIMIT_EXCEEDED";
+		break;
+
+		case NT_STATUS_OPLOCK_NOT_GRANTED:
+			return "NT_STATUS_OPLOCK_NOT_GRANTED";
+		break;
+
+		case NT_STATUS_INVALID_OPLOCK_PROTOCOL:
+			return "NT_STATUS_INVALID_OPLOCK_PROTOCOL";
+		break;
+
+		case NT_STATUS_INTERNAL_DB_CORRUPTION:
+			return "NT_STATUS_INTERNAL_DB_CORRUPTION";
+		break;
+
+		case NT_STATUS_INTERNAL_ERROR:
+			return "NT_STATUS_INTERNAL_ERROR";
+		break;
+
+		case NT_STATUS_GENERIC_NOT_MAPPED:
+			return "NT_STATUS_GENERIC_NOT_MAPPED";
+		break;
+
+		case NT_STATUS_BAD_DESCRIPTOR_FORMAT:
+			return "NT_STATUS_BAD_DESCRIPTOR_FORMAT";
+		break;
+
+		case NT_STATUS_INVALID_USER_BUFFER:
+			return "NT_STATUS_INVALID_USER_BUFFER";
+		break;
+
+		case NT_STATUS_UNEXPECTED_IO_ERROR:
+			return "NT_STATUS_UNEXPECTED_IO_ERROR";
+		break;
+
+		case NT_STATUS_UNEXPECTED_MM_CREATE_ERR:
+			return "NT_STATUS_UNEXPECTED_MM_CREATE_ERR";
+		break;
+
+		case NT_STATUS_UNEXPECTED_MM_MAP_ERROR:
+			return "NT_STATUS_UNEXPECTED_MM_MAP_ERROR";
+		break;
+
+		case NT_STATUS_UNEXPECTED_MM_EXTEND_ERR:
+			return "NT_STATUS_UNEXPECTED_MM_EXTEND_ERR";
+		break;
+
+		case NT_STATUS_NOT_LOGON_PROCESS:
+			return "NT_STATUS_NOT_LOGON_PROCESS";
+		break;
+
+		case NT_STATUS_LOGON_SESSION_EXISTS:
+			return "NT_STATUS_LOGON_SESSION_EXISTS";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_1:
+			return "NT_STATUS_INVALID_PARAMETER_1";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_2:
+			return "NT_STATUS_INVALID_PARAMETER_2";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_3:
+			return "NT_STATUS_INVALID_PARAMETER_3";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_4:
+			return "NT_STATUS_INVALID_PARAMETER_4";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_5:
+			return "NT_STATUS_INVALID_PARAMETER_5";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_6:
+			return "NT_STATUS_INVALID_PARAMETER_6";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_7:
+			return "NT_STATUS_INVALID_PARAMETER_7";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_8:
+			return "NT_STATUS_INVALID_PARAMETER_8";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_9:
+			return "NT_STATUS_INVALID_PARAMETER_9";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_10:
+			return "NT_STATUS_INVALID_PARAMETER_10";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_11:
+			return "NT_STATUS_INVALID_PARAMETER_11";
+		break;
+
+		case NT_STATUS_INVALID_PARAMETER_12:
+			return "NT_STATUS_INVALID_PARAMETER_12";
+		break;
+
+		case NT_STATUS_REDIRECTOR_NOT_STARTED:
+			return "NT_STATUS_REDIRECTOR_NOT_STARTED";
+		break;
+
+		case NT_STATUS_REDIRECTOR_STARTED:
+			return "NT_STATUS_REDIRECTOR_STARTED";
+		break;
+
+		case NT_STATUS_STACK_OVERFLOW:
+			return "NT_STATUS_STACK_OVERFLOW";
+		break;
+
+		case NT_STATUS_NO_SUCH_PACKAGE:
+			return "NT_STATUS_NO_SUCH_PACKAGE";
+		break;
+
+		case NT_STATUS_BAD_FUNCTION_TABLE:
+			return "NT_STATUS_BAD_FUNCTION_TABLE";
+		break;
+
+		case NT_STATUS_DIRECTORY_NOT_EMPTY:
+			return "NT_STATUS_DIRECTORY_NOT_EMPTY";
+		break;
+
+		case NT_STATUS_FILE_CORRUPT_ERROR:
+			return "NT_STATUS_FILE_CORRUPT_ERROR";
+		break;
+
+		case NT_STATUS_NOT_A_DIRECTORY:
+			return "NT_STATUS_NOT_A_DIRECTORY";
+		break;
+
+		case NT_STATUS_BAD_LOGON_SESSION_STATE:
+			return "NT_STATUS_BAD_LOGON_SESSION_STATE";
+		break;
+
+		case NT_STATUS_LOGON_SESSION_COLLISION:
+			return "NT_STATUS_LOGON_SESSION_COLLISION";
+		break;
+
+		case NT_STATUS_NAME_TOO_LONG:
+			return "NT_STATUS_NAME_TOO_LONG";
+		break;
+
+		case NT_STATUS_FILES_OPEN:
+			return "NT_STATUS_FILES_OPEN";
+		break;
+
+		case NT_STATUS_CONNECTION_IN_USE:
+			return "NT_STATUS_CONNECTION_IN_USE";
+		break;
+
+		case NT_STATUS_MESSAGE_NOT_FOUND:
+			return "NT_STATUS_MESSAGE_NOT_FOUND";
+		break;
+
+		case NT_STATUS_PROCESS_IS_TERMINATING:
+			return "NT_STATUS_PROCESS_IS_TERMINATING";
+		break;
+
+		case NT_STATUS_INVALID_LOGON_TYPE:
+			return "NT_STATUS_INVALID_LOGON_TYPE";
+		break;
+
+		case NT_STATUS_NO_GUID_TRANSLATION:
+			return "NT_STATUS_NO_GUID_TRANSLATION";
+		break;
+
+		case NT_STATUS_CANNOT_IMPERSONATE:
+			return "NT_STATUS_CANNOT_IMPERSONATE";
+		break;
+
+		case NT_STATUS_IMAGE_ALREADY_LOADED:
+			return "NT_STATUS_IMAGE_ALREADY_LOADED";
+		break;
+
+		case NT_STATUS_ABIOS_NOT_PRESENT:
+			return "NT_STATUS_ABIOS_NOT_PRESENT";
+		break;
+
+		case NT_STATUS_ABIOS_LID_NOT_EXIST:
+			return "NT_STATUS_ABIOS_LID_NOT_EXIST";
+		break;
+
+		case NT_STATUS_ABIOS_LID_ALREADY_OWNED:
+			return "NT_STATUS_ABIOS_LID_ALREADY_OWNED";
+		break;
+
+		case NT_STATUS_ABIOS_NOT_LID_OWNER:
+			return "NT_STATUS_ABIOS_NOT_LID_OWNER";
+		break;
+
+		case NT_STATUS_ABIOS_INVALID_COMMAND:
+			return "NT_STATUS_ABIOS_INVALID_COMMAND";
+		break;
+
+		case NT_STATUS_ABIOS_INVALID_LID:
+			return "NT_STATUS_ABIOS_INVALID_LID";
+		break;
+
+		case NT_STATUS_ABIOS_SELECTOR_NOT_AVAILABLE:
+			return "NT_STATUS_ABIOS_SELECTOR_NOT_AVAILABLE";
+		break;
+
+		case NT_STATUS_ABIOS_INVALID_SELECTOR:
+			return "NT_STATUS_ABIOS_INVALID_SELECTOR";
+		break;
+
+		case NT_STATUS_NO_LDT:
+			return "NT_STATUS_NO_LDT";
+		break;
+
+		case NT_STATUS_INVALID_LDT_SIZE:
+			return "NT_STATUS_INVALID_LDT_SIZE";
+		break;
+
+		case NT_STATUS_INVALID_LDT_OFFSET:
+			return "NT_STATUS_INVALID_LDT_OFFSET";
+		break;
+
+		case NT_STATUS_INVALID_LDT_DESCRIPTOR:
+			return "NT_STATUS_INVALID_LDT_DESCRIPTOR";
+		break;
+
+		case NT_STATUS_INVALID_IMAGE_NE_FORMAT:
+			return "NT_STATUS_INVALID_IMAGE_NE_FORMAT";
+		break;
+
+		case NT_STATUS_RXACT_INVALID_STATE:
+			return "NT_STATUS_RXACT_INVALID_STATE";
+		break;
+
+		case NT_STATUS_RXACT_COMMIT_FAILURE:
+			return "NT_STATUS_RXACT_COMMIT_FAILURE";
+		break;
+
+		case NT_STATUS_MAPPED_FILE_SIZE_ZERO:
+			return "NT_STATUS_MAPPED_FILE_SIZE_ZERO";
+		break;
+
+		case NT_STATUS_TOO_MANY_OPENED_FILES:
+			return "NT_STATUS_TOO_MANY_OPENED_FILES";
+		break;
+
+		case NT_STATUS_CANCELLED:
+			return "NT_STATUS_CANCELLED";
+		break;
+
+		case NT_STATUS_CANNOT_DELETE:
+			return "NT_STATUS_CANNOT_DELETE";
+		break;
+
+		case NT_STATUS_INVALID_COMPUTER_NAME:
+			return "NT_STATUS_INVALID_COMPUTER_NAME";
+		break;
+
+		case NT_STATUS_FILE_DELETED:
+			return "NT_STATUS_FILE_DELETED";
+		break;
+
+		case NT_STATUS_SPECIAL_ACCOUNT:
+			return "NT_STATUS_SPECIAL_ACCOUNT";
+		break;
+
+		case NT_STATUS_SPECIAL_GROUP:
+			return "NT_STATUS_SPECIAL_GROUP";
+		break;
+
+		case NT_STATUS_SPECIAL_USER:
+			return "NT_STATUS_SPECIAL_USER";
+		break;
+
+		case NT_STATUS_MEMBERS_PRIMARY_GROUP:
+			return "NT_STATUS_MEMBERS_PRIMARY_GROUP";
+		break;
+
+		case NT_STATUS_FILE_CLOSED:
+			return "NT_STATUS_FILE_CLOSED";
+		break;
+
+		case NT_STATUS_TOO_MANY_THREADS:
+			return "NT_STATUS_TOO_MANY_THREADS";
+		break;
+
+		case NT_STATUS_THREAD_NOT_IN_PROCESS:
+			return "NT_STATUS_THREAD_NOT_IN_PROCESS";
+		break;
+
+		case NT_STATUS_TOKEN_ALREADY_IN_USE:
+			return "NT_STATUS_TOKEN_ALREADY_IN_USE";
+		break;
+
+		case NT_STATUS_PAGEFILE_QUOTA_EXCEEDED:
+			return "NT_STATUS_PAGEFILE_QUOTA_EXCEEDED";
+		break;
+
+		case NT_STATUS_COMMITMENT_LIMIT:
+			return "NT_STATUS_COMMITMENT_LIMIT";
+		break;
+
+		case NT_STATUS_INVALID_IMAGE_LE_FORMAT:
+			return "NT_STATUS_INVALID_IMAGE_LE_FORMAT";
+		break;
+
+		case NT_STATUS_INVALID_IMAGE_NOT_MZ:
+			return "NT_STATUS_INVALID_IMAGE_NOT_MZ";
+		break;
+
+		case NT_STATUS_INVALID_IMAGE_PROTECT:
+			return "NT_STATUS_INVALID_IMAGE_PROTECT";
+		break;
+
+		case NT_STATUS_INVALID_IMAGE_WIN_16:
+			return "NT_STATUS_INVALID_IMAGE_WIN_16";
+		break;
+
+		case NT_STATUS_LOGON_SERVER_CONFLICT:
+			return "NT_STATUS_LOGON_SERVER_CONFLICT";
+		break;
+
+		case NT_STATUS_TIME_DIFFERENCE_AT_DC:
+			return "NT_STATUS_TIME_DIFFERENCE_AT_DC";
+		break;
+
+		case NT_STATUS_SYNCHRONIZATION_REQUIRED:
+			return "NT_STATUS_SYNCHRONIZATION_REQUIRED";
+		break;
+
+		case NT_STATUS_DLL_NOT_FOUND:
+			return "NT_STATUS_DLL_NOT_FOUND";
+		break;
+
+		case NT_STATUS_OPEN_FAILED:
+			return "NT_STATUS_OPEN_FAILED";
+		break;
+
+		case NT_STATUS_IO_PRIVILEGE_FAILED:
+			return "NT_STATUS_IO_PRIVILEGE_FAILED";
+		break;
+
+		case NT_STATUS_ORDINAL_NOT_FOUND:
+			return "NT_STATUS_ORDINAL_NOT_FOUND";
+		break;
+
+		case NT_STATUS_ENTRYPOINT_NOT_FOUND:
+			return "NT_STATUS_ENTRYPOINT_NOT_FOUND";
+		break;
+
+		case NT_STATUS_CONTROL_C_EXIT:
+			return "NT_STATUS_CONTROL_C_EXIT";
+		break;
+
+		case NT_STATUS_LOCAL_DISCONNECT:
+			return "NT_STATUS_LOCAL_DISCONNECT";
+		break;
+
+		case NT_STATUS_REMOTE_DISCONNECT:
+			return "NT_STATUS_REMOTE_DISCONNECT";
+		break;
+
+		case NT_STATUS_REMOTE_RESOURCES:
+			return "NT_STATUS_REMOTE_RESOURCES";
+		break;
+
+		case NT_STATUS_LINK_FAILED:
+			return "NT_STATUS_LINK_FAILED";
+		break;
+
+		case NT_STATUS_LINK_TIMEOUT:
+			return "NT_STATUS_LINK_TIMEOUT";
+		break;
+
+		case NT_STATUS_INVALID_CONNECTION:
+			return "NT_STATUS_INVALID_CONNECTION";
+		break;
+
+		case NT_STATUS_INVALID_ADDRESS:
+			return "NT_STATUS_INVALID_ADDRESS";
+		break;
+
+		case NT_STATUS_DLL_INIT_FAILED:
+			return "NT_STATUS_DLL_INIT_FAILED";
+		break;
+
+		case NT_STATUS_MISSING_SYSTEMFILE:
+			return "NT_STATUS_MISSING_SYSTEMFILE";
+		break;
+
+		case NT_STATUS_UNHANDLED_EXCEPTION:
+			return "NT_STATUS_UNHANDLED_EXCEPTION";
+		break;
+
+		case NT_STATUS_APP_INIT_FAILURE:
+			return "NT_STATUS_APP_INIT_FAILURE";
+		break;
+
+		case NT_STATUS_PAGEFILE_CREATE_FAILED:
+			return "NT_STATUS_PAGEFILE_CREATE_FAILED";
+		break;
+
+		case NT_STATUS_NO_PAGEFILE:
+			return "NT_STATUS_NO_PAGEFILE";
+		break;
+
+		case NT_STATUS_INVALID_LEVEL:
+			return "NT_STATUS_INVALID_LEVEL";
+		break;
+
+		case NT_STATUS_WRONG_PASSWORD_CORE:
+			return "NT_STATUS_WRONG_PASSWORD_CORE";
+		break;
+
+		case NT_STATUS_ILLEGAL_FLOAT_CONTEXT:
+			return "NT_STATUS_ILLEGAL_FLOAT_CONTEXT";
+		break;
+
+		case NT_STATUS_PIPE_BROKEN:
+			return "NT_STATUS_PIPE_BROKEN";
+		break;
+
+		case NT_STATUS_REGISTRY_CORRUPT:
+			return "NT_STATUS_REGISTRY_CORRUPT";
+		break;
+
+		case NT_STATUS_REGISTRY_IO_FAILED:
+			return "NT_STATUS_REGISTRY_IO_FAILED";
+		break;
+
+		case NT_STATUS_NO_EVENT_PAIR:
+			return "NT_STATUS_NO_EVENT_PAIR";
+		break;
+
+		case NT_STATUS_UNRECOGNIZED_VOLUME:
+			return "NT_STATUS_UNRECOGNIZED_VOLUME";
+		break;
+
+		case NT_STATUS_SERIAL_NO_DEVICE_INITED:
+			return "NT_STATUS_SERIAL_NO_DEVICE_INITED";
+		break;
+
+		case NT_STATUS_NO_SUCH_ALIAS:
+			return "NT_STATUS_NO_SUCH_ALIAS";
+		break;
+
+		case NT_STATUS_MEMBER_NOT_IN_ALIAS:
+			return "NT_STATUS_MEMBER_NOT_IN_ALIAS";
+		break;
+
+		case NT_STATUS_MEMBER_IN_ALIAS:
+			return "NT_STATUS_MEMBER_IN_ALIAS";
+		break;
+
+		case NT_STATUS_ALIAS_EXISTS:
+			return "NT_STATUS_ALIAS_EXISTS";
+		break;
+
+		case NT_STATUS_LOGON_NOT_GRANTED:
+			return "NT_STATUS_LOGON_NOT_GRANTED";
+		break;
+
+		case NT_STATUS_TOO_MANY_SECRETS:
+			return "NT_STATUS_TOO_MANY_SECRETS";
+		break;
+
+		case NT_STATUS_SECRET_TOO_LONG:
+			return "NT_STATUS_SECRET_TOO_LONG";
+		break;
+
+		case NT_STATUS_INTERNAL_DB_ERROR:
+			return "NT_STATUS_INTERNAL_DB_ERROR";
+		break;
+
+		case NT_STATUS_FULLSCREEN_MODE:
+			return "NT_STATUS_FULLSCREEN_MODE";
+		break;
+
+		case NT_STATUS_TOO_MANY_CONTEXT_IDS:
+			return "NT_STATUS_TOO_MANY_CONTEXT_IDS";
+		break;
+
+		case NT_STATUS_LOGON_TYPE_NOT_GRANTED:
+			return "NT_STATUS_LOGON_TYPE_NOT_GRANTED";
+		break;
+
+		case NT_STATUS_NOT_REGISTRY_FILE:
+			return "NT_STATUS_NOT_REGISTRY_FILE";
+		break;
+
+		case NT_STATUS_NT_CROSS_ENCRYPTION_REQUIRED:
+			return "NT_STATUS_NT_CROSS_ENCRYPTION_REQUIRED";
+		break;
+
+		case NT_STATUS_DOMAIN_CTRLR_CONFIG_ERROR:
+			return "NT_STATUS_DOMAIN_CTRLR_CONFIG_ERROR";
+		break;
+
+		case NT_STATUS_FT_MISSING_MEMBER:
+			return "NT_STATUS_FT_MISSING_MEMBER";
+		break;
+
+		case NT_STATUS_ILL_FORMED_SERVICE_ENTRY:
+			return "NT_STATUS_ILL_FORMED_SERVICE_ENTRY";
+		break;
+
+		case NT_STATUS_ILLEGAL_CHARACTER:
+			return "NT_STATUS_ILLEGAL_CHARACTER";
+		break;
+
+		case NT_STATUS_UNMAPPABLE_CHARACTER:
+			return "NT_STATUS_UNMAPPABLE_CHARACTER";
+		break;
+
+		case NT_STATUS_UNDEFINED_CHARACTER:
+			return "NT_STATUS_UNDEFINED_CHARACTER";
+		break;
+
+		case NT_STATUS_FLOPPY_VOLUME:
+			return "NT_STATUS_FLOPPY_VOLUME";
+		break;
+
+		case NT_STATUS_FLOPPY_ID_MARK_NOT_FOUND:
+			return "NT_STATUS_FLOPPY_ID_MARK_NOT_FOUND";
+		break;
+
+		case NT_STATUS_FLOPPY_WRONG_CYLINDER:
+			return "NT_STATUS_FLOPPY_WRONG_CYLINDER";
+		break;
+
+		case NT_STATUS_FLOPPY_UNKNOWN_ERROR:
+			return "NT_STATUS_FLOPPY_UNKNOWN_ERROR";
+		break;
+
+		case NT_STATUS_FLOPPY_BAD_REGISTERS:
+			return "NT_STATUS_FLOPPY_BAD_REGISTERS";
+		break;
+
+		case NT_STATUS_DISK_RECALIBRATE_FAILED:
+			return "NT_STATUS_DISK_RECALIBRATE_FAILED";
+		break;
+
+		case NT_STATUS_DISK_OPERATION_FAILED:
+			return "NT_STATUS_DISK_OPERATION_FAILED";
+		break;
+
+		case NT_STATUS_DISK_RESET_FAILED:
+			return "NT_STATUS_DISK_RESET_FAILED";
+		break;
+
+		case NT_STATUS_SHARED_IRQ_BUSY:
+			return "NT_STATUS_SHARED_IRQ_BUSY";
+		break;
+
+		case NT_STATUS_FT_ORPHANING:
+			return "NT_STATUS_FT_ORPHANING";
+		break;
+
+		case NT_STATUS_PARTITION_FAILURE:
+			return "NT_STATUS_PARTITION_FAILURE";
+		break;
+
+		case NT_STATUS_INVALID_BLOCK_LENGTH:
+			return "NT_STATUS_INVALID_BLOCK_LENGTH";
+		break;
+
+		case NT_STATUS_DEVICE_NOT_PARTITIONED:
+			return "NT_STATUS_DEVICE_NOT_PARTITIONED";
+		break;
+
+		case NT_STATUS_UNABLE_TO_LOCK_MEDIA:
+			return "NT_STATUS_UNABLE_TO_LOCK_MEDIA";
+		break;
+
+		case NT_STATUS_UNABLE_TO_UNLOAD_MEDIA:
+			return "NT_STATUS_UNABLE_TO_UNLOAD_MEDIA";
+		break;
+
+		case NT_STATUS_EOM_OVERFLOW:
+			return "NT_STATUS_EOM_OVERFLOW";
+		break;
+
+		case NT_STATUS_NO_MEDIA:
+			return "NT_STATUS_NO_MEDIA";
+		break;
+
+		case NT_STATUS_NO_SUCH_MEMBER:
+			return "NT_STATUS_NO_SUCH_MEMBER";
+		break;
+
+		case NT_STATUS_INVALID_MEMBER:
+			return "NT_STATUS_INVALID_MEMBER";
+		break;
+
+		case NT_STATUS_KEY_DELETED:
+			return "NT_STATUS_KEY_DELETED";
+		break;
+
+		case NT_STATUS_NO_LOG_SPACE:
+			return "NT_STATUS_NO_LOG_SPACE";
+		break;
+
+		case NT_STATUS_TOO_MANY_SIDS:
+			return "NT_STATUS_TOO_MANY_SIDS";
+		break;
+
+		case NT_STATUS_LM_CROSS_ENCRYPTION_REQUIRED:
+			return "NT_STATUS_LM_CROSS_ENCRYPTION_REQUIRED";
+		break;
+
+		case NT_STATUS_KEY_HAS_CHILDREN:
+			return "NT_STATUS_KEY_HAS_CHILDREN";
+		break;
+
+		case NT_STATUS_CHILD_MUST_BE_VOLATILE:
+			return "NT_STATUS_CHILD_MUST_BE_VOLATILE";
+		break;
+
+		case NT_STATUS_DEVICE_CONFIGURATION_ERROR:
+			return "NT_STATUS_DEVICE_CONFIGURATION_ERROR";
+		break;
+
+		case NT_STATUS_DRIVER_INTERNAL_ERROR:
+			return "NT_STATUS_DRIVER_INTERNAL_ERROR";
+		break;
+
+		case NT_STATUS_INVALID_DEVICE_STATE:
+			return "NT_STATUS_INVALID_DEVICE_STATE";
+		break;
+
+		case NT_STATUS_IO_DEVICE_ERROR:
+			return "NT_STATUS_IO_DEVICE_ERROR";
+		break;
+
+		case NT_STATUS_DEVICE_PROTOCOL_ERROR:
+			return "NT_STATUS_DEVICE_PROTOCOL_ERROR";
+		break;
+
+		case NT_STATUS_BACKUP_CONTROLLER:
+			return "NT_STATUS_BACKUP_CONTROLLER";
+		break;
+
+		case NT_STATUS_LOG_FILE_FULL:
+			return "NT_STATUS_LOG_FILE_FULL";
+		break;
+
+		case NT_STATUS_TOO_LATE:
+			return "NT_STATUS_TOO_LATE";
+		break;
+
+		case NT_STATUS_NO_TRUST_LSA_SECRET:
+			return "NT_STATUS_NO_TRUST_LSA_SECRET";
+		break;
+
+		case NT_STATUS_NO_TRUST_SAM_ACCOUNT:
+			return "NT_STATUS_NO_TRUST_SAM_ACCOUNT";
+		break;
+
+		case NT_STATUS_TRUSTED_DOMAIN_FAILURE:
+			return "NT_STATUS_TRUSTED_DOMAIN_FAILURE";
+		break;
+
+		case NT_STATUS_TRUSTED_RELATIONSHIP_FAILURE:
+			return "NT_STATUS_TRUSTED_RELATIONSHIP_FAILURE";
+		break;
+
+		case NT_STATUS_EVENTLOG_FILE_CORRUPT:
+			return "NT_STATUS_EVENTLOG_FILE_CORRUPT";
+		break;
+
+		case NT_STATUS_EVENTLOG_CANT_START:
+			return "NT_STATUS_EVENTLOG_CANT_START";
+		break;
+
+		case NT_STATUS_TRUST_FAILURE:
+			return "NT_STATUS_TRUST_FAILURE";
+		break;
+
+		case NT_STATUS_MUTANT_LIMIT_EXCEEDED:
+			return "NT_STATUS_MUTANT_LIMIT_EXCEEDED";
+		break;
+
+		case NT_STATUS_NETLOGON_NOT_STARTED:
+			return "NT_STATUS_NETLOGON_NOT_STARTED";
+		break;
+
+		case NT_STATUS_ACCOUNT_EXPIRED:
+			return "NT_STATUS_ACCOUNT_EXPIRED";
+		break;
+
+		case NT_STATUS_POSSIBLE_DEADLOCK:
+			return "NT_STATUS_POSSIBLE_DEADLOCK";
+		break;
+
+		case NT_STATUS_NETWORK_CREDENTIAL_CONFLICT:
+			return "NT_STATUS_NETWORK_CREDENTIAL_CONFLICT";
+		break;
+
+		case NT_STATUS_REMOTE_SESSION_LIMIT:
+			return "NT_STATUS_REMOTE_SESSION_LIMIT";
+		break;
+
+		case NT_STATUS_EVENTLOG_FILE_CHANGED:
+			return "NT_STATUS_EVENTLOG_FILE_CHANGED";
+		break;
+
+		case NT_STATUS_NOLOGON_INTERDOMAIN_TRUST_ACCOUNT:
+			return "NT_STATUS_NOLOGON_INTERDOMAIN_TRUST_ACCOUNT";
+		break;
+
+		case NT_STATUS_NOLOGON_WORKSTATION_TRUST_ACCOUNT:
+			return "NT_STATUS_NOLOGON_WORKSTATION_TRUST_ACCOUNT";
+		break;
+
+		case NT_STATUS_NOLOGON_SERVER_TRUST_ACCOUNT:
+			return "NT_STATUS_NOLOGON_SERVER_TRUST_ACCOUNT";
+		break;
+
+		case NT_STATUS_DOMAIN_TRUST_INCONSISTENT:
+			return "NT_STATUS_DOMAIN_TRUST_INCONSISTENT";
+		break;
+
+		case NT_STATUS_FS_DRIVER_REQUIRED:
+			return "NT_STATUS_FS_DRIVER_REQUIRED";
+		break;
+
+		case NT_STATUS_NO_USER_SESSION_KEY:
+			return "NT_STATUS_NO_USER_SESSION_KEY";
+		break;
+
+		case NT_STATUS_USER_SESSION_DELETED:
+			return "NT_STATUS_USER_SESSION_DELETED";
+		break;
+
+		case NT_STATUS_RESOURCE_LANG_NOT_FOUND:
+			return "NT_STATUS_RESOURCE_LANG_NOT_FOUND";
+		break;
+
+		case NT_STATUS_INSUFF_SERVER_RESOURCES:
+			return "NT_STATUS_INSUFF_SERVER_RESOURCES";
+		break;
+
+		case NT_STATUS_INVALID_BUFFER_SIZE:
+			return "NT_STATUS_INVALID_BUFFER_SIZE";
+		break;
+
+		case NT_STATUS_INVALID_ADDRESS_COMPONENT:
+			return "NT_STATUS_INVALID_ADDRESS_COMPONENT";
+		break;
+
+		case NT_STATUS_INVALID_ADDRESS_WILDCARD:
+			return "NT_STATUS_INVALID_ADDRESS_WILDCARD";
+		break;
+
+		case NT_STATUS_TOO_MANY_ADDRESSES:
+			return "NT_STATUS_TOO_MANY_ADDRESSES";
+		break;
+
+		case NT_STATUS_ADDRESS_ALREADY_EXISTS:
+			return "NT_STATUS_ADDRESS_ALREADY_EXISTS";
+		break;
+
+		case NT_STATUS_ADDRESS_CLOSED:
+			return "NT_STATUS_ADDRESS_CLOSED";
+		break;
+
+		case NT_STATUS_CONNECTION_DISCONNECTED:
+			return "NT_STATUS_CONNECTION_DISCONNECTED";
+		break;
+
+		case NT_STATUS_CONNECTION_RESET:
+			return "NT_STATUS_CONNECTION_RESET";
+		break;
+
+		case NT_STATUS_TOO_MANY_NODES:
+			return "NT_STATUS_TOO_MANY_NODES";
+		break;
+
+		case NT_STATUS_TRANSACTION_ABORTED:
+			return "NT_STATUS_TRANSACTION_ABORTED";
+		break;
+
+		case NT_STATUS_TRANSACTION_TIMED_OUT:
+			return "NT_STATUS_TRANSACTION_TIMED_OUT";
+		break;
+
+		case NT_STATUS_TRANSACTION_NO_RELEASE:
+			return "NT_STATUS_TRANSACTION_NO_RELEASE";
+		break;
+
+		case NT_STATUS_TRANSACTION_NO_MATCH:
+			return "NT_STATUS_TRANSACTION_NO_MATCH";
+		break;
+
+		case NT_STATUS_TRANSACTION_RESPONDED:
+			return "NT_STATUS_TRANSACTION_RESPONDED";
+		break;
+
+		case NT_STATUS_TRANSACTION_INVALID_ID:
+			return "NT_STATUS_TRANSACTION_INVALID_ID";
+		break;
+
+		case NT_STATUS_TRANSACTION_INVALID_TYPE:
+			return "NT_STATUS_TRANSACTION_INVALID_TYPE";
+		break;
+
+		case NT_STATUS_NOT_SERVER_SESSION:
+			return "NT_STATUS_NOT_SERVER_SESSION";
+		break;
+
+		case NT_STATUS_NOT_CLIENT_SESSION:
+			return "NT_STATUS_NOT_CLIENT_SESSION";
+		break;
+
+		case NT_STATUS_CANNOT_LOAD_REGISTRY_FILE:
+			return "NT_STATUS_CANNOT_LOAD_REGISTRY_FILE";
+		break;
+
+		case NT_STATUS_DEBUG_ATTACH_FAILED:
+			return "NT_STATUS_DEBUG_ATTACH_FAILED";
+		break;
+
+		case NT_STATUS_SYSTEM_PROCESS_TERMINATED:
+			return "NT_STATUS_SYSTEM_PROCESS_TERMINATED";
+		break;
+
+		case NT_STATUS_DATA_NOT_ACCEPTED:
+			return "NT_STATUS_DATA_NOT_ACCEPTED";
+		break;
+
+		case NT_STATUS_NO_BROWSER_SERVERS_FOUND:
+			return "NT_STATUS_NO_BROWSER_SERVERS_FOUND";
+		break;
+
+		case NT_STATUS_VDM_HARD_ERROR:
+			return "NT_STATUS_VDM_HARD_ERROR";
+		break;
+
+		case NT_STATUS_DRIVER_CANCEL_TIMEOUT:
+			return "NT_STATUS_DRIVER_CANCEL_TIMEOUT";
+		break;
+
+		case NT_STATUS_REPLY_MESSAGE_MISMATCH:
+			return "NT_STATUS_REPLY_MESSAGE_MISMATCH";
+		break;
+
+		case NT_STATUS_MAPPED_ALIGNMENT:
+			return "NT_STATUS_MAPPED_ALIGNMENT";
+		break;
+
+		case NT_STATUS_IMAGE_CHECKSUM_MISMATCH:
+			return "NT_STATUS_IMAGE_CHECKSUM_MISMATCH";
+		break;
+
+		case NT_STATUS_LOST_WRITEBEHIND_DATA:
+			return "NT_STATUS_LOST_WRITEBEHIND_DATA";
+		break;
+
+		case NT_STATUS_CLIENT_SERVER_PARAMETERS_INVALID:
+			return "NT_STATUS_CLIENT_SERVER_PARAMETERS_INVALID";
+		break;
+
+		case NT_STATUS_PASSWORD_MUST_CHANGE:
+			return "NT_STATUS_PASSWORD_MUST_CHANGE";
+		break;
+
+		case NT_STATUS_NOT_FOUND:
+			return "NT_STATUS_NOT_FOUND";
+		break;
+
+		case NT_STATUS_NOT_TINY_STREAM:
+			return "NT_STATUS_NOT_TINY_STREAM";
+		break;
+
+		case NT_STATUS_RECOVERY_FAILURE:
+			return "NT_STATUS_RECOVERY_FAILURE";
+		break;
+
+		case NT_STATUS_STACK_OVERFLOW_READ:
+			return "NT_STATUS_STACK_OVERFLOW_READ";
+		break;
+
+		case NT_STATUS_FAIL_CHECK:
+			return "NT_STATUS_FAIL_CHECK";
+		break;
+
+		case NT_STATUS_DUPLICATE_OBJECTID:
+			return "NT_STATUS_DUPLICATE_OBJECTID";
+		break;
+
+		case NT_STATUS_OBJECTID_EXISTS:
+			return "NT_STATUS_OBJECTID_EXISTS";
+		break;
+
+		case NT_STATUS_CONVERT_TO_LARGE:
+			return "NT_STATUS_CONVERT_TO_LARGE";
+		break;
+
+		case NT_STATUS_RETRY:
+			return "NT_STATUS_RETRY";
+		break;
+
+		case NT_STATUS_FOUND_OUT_OF_SCOPE:
+			return "NT_STATUS_FOUND_OUT_OF_SCOPE";
+		break;
+
+		case NT_STATUS_ALLOCATE_BUCKET:
+			return "NT_STATUS_ALLOCATE_BUCKET";
+		break;
+
+		case NT_STATUS_PROPSET_NOT_FOUND:
+			return "NT_STATUS_PROPSET_NOT_FOUND";
+		break;
+
+		case NT_STATUS_MARSHALL_OVERFLOW:
+			return "NT_STATUS_MARSHALL_OVERFLOW";
+		break;
+
+		case NT_STATUS_INVALID_VARIANT:
+			return "NT_STATUS_INVALID_VARIANT";
+		break;
+
+		case NT_STATUS_DOMAIN_CONTROLLER_NOT_FOUND:
+			return "NT_STATUS_DOMAIN_CONTROLLER_NOT_FOUND";
+		break;
+
+		case NT_STATUS_ACCOUNT_LOCKED_OUT:
+			return "NT_STATUS_ACCOUNT_LOCKED_OUT";
+		break;
+
+		case NT_STATUS_HANDLE_NOT_CLOSABLE:
+			return "NT_STATUS_HANDLE_NOT_CLOSABLE";
+		break;
+
+		case NT_STATUS_CONNECTION_REFUSED:
+			return "NT_STATUS_CONNECTION_REFUSED";
+		break;
+
+		case NT_STATUS_GRACEFUL_DISCONNECT:
+			return "NT_STATUS_GRACEFUL_DISCONNECT";
+		break;
+
+		case NT_STATUS_ADDRESS_ALREADY_ASSOCIATED:
+			return "NT_STATUS_ADDRESS_ALREADY_ASSOCIATED";
+		break;
+
+		case NT_STATUS_ADDRESS_NOT_ASSOCIATED:
+			return "NT_STATUS_ADDRESS_NOT_ASSOCIATED";
+		break;
+
+		case NT_STATUS_CONNECTION_INVALID:
+			return "NT_STATUS_CONNECTION_INVALID";
+		break;
+
+		case NT_STATUS_CONNECTION_ACTIVE:
+			return "NT_STATUS_CONNECTION_ACTIVE";
+		break;
+
+		case NT_STATUS_NETWORK_UNREACHABLE:
+			return "NT_STATUS_NETWORK_UNREACHABLE";
+		break;
+
+		case NT_STATUS_HOST_UNREACHABLE:
+			return "NT_STATUS_HOST_UNREACHABLE";
+		break;
+
+		case NT_STATUS_PROTOCOL_UNREACHABLE:
+			return "NT_STATUS_PROTOCOL_UNREACHABLE";
+		break;
+
+		case NT_STATUS_PORT_UNREACHABLE:
+			return "NT_STATUS_PORT_UNREACHABLE";
+		break;
+
+		case NT_STATUS_REQUEST_ABORTED:
+			return "NT_STATUS_REQUEST_ABORTED";
+		break;
+
+		case NT_STATUS_CONNECTION_ABORTED:
+			return "NT_STATUS_CONNECTION_ABORTED";
+		break;
+
+		case NT_STATUS_BAD_COMPRESSION_BUFFER:
+			return "NT_STATUS_BAD_COMPRESSION_BUFFER";
+		break;
+
+		case NT_STATUS_USER_MAPPED_FILE:
+			return "NT_STATUS_USER_MAPPED_FILE";
+		break;
+
+		case NT_STATUS_AUDIT_FAILED:
+			return "NT_STATUS_AUDIT_FAILED";
+		break;
+
+		case NT_STATUS_TIMER_RESOLUTION_NOT_SET:
+			return "NT_STATUS_TIMER_RESOLUTION_NOT_SET";
+		break;
+
+		case NT_STATUS_CONNECTION_COUNT_LIMIT:
+			return "NT_STATUS_CONNECTION_COUNT_LIMIT";
+		break;
+
+		case NT_STATUS_LOGIN_TIME_RESTRICTION:
+			return "NT_STATUS_LOGIN_TIME_RESTRICTION";
+		break;
+
+		case NT_STATUS_LOGIN_WKSTA_RESTRICTION:
+			return "NT_STATUS_LOGIN_WKSTA_RESTRICTION";
+		break;
+
+		case NT_STATUS_IMAGE_MP_UP_MISMATCH:
+			return "NT_STATUS_IMAGE_MP_UP_MISMATCH";
+		break;
+
+		case NT_STATUS_INSUFFICIENT_LOGON_INFO:
+			return "NT_STATUS_INSUFFICIENT_LOGON_INFO";
+		break;
+
+		case NT_STATUS_BAD_DLL_ENTRYPOINT:
+			return "NT_STATUS_BAD_DLL_ENTRYPOINT";
+		break;
+
+		case NT_STATUS_BAD_SERVICE_ENTRYPOINT:
+			return "NT_STATUS_BAD_SERVICE_ENTRYPOINT";
+		break;
+
+		case NT_STATUS_LPC_REPLY_LOST:
+			return "NT_STATUS_LPC_REPLY_LOST";
+		break;
+
+		case NT_STATUS_IP_ADDRESS_CONFLICT1:
+			return "NT_STATUS_IP_ADDRESS_CONFLICT1";
+		break;
+
+		case NT_STATUS_IP_ADDRESS_CONFLICT2:
+			return "NT_STATUS_IP_ADDRESS_CONFLICT2";
+		break;
+
+		case NT_STATUS_REGISTRY_QUOTA_LIMIT:
+			return "NT_STATUS_REGISTRY_QUOTA_LIMIT";
+		break;
+
+		case NT_STATUS_PATH_NOT_COVERED:
+			return "NT_STATUS_PATH_NOT_COVERED";
+		break;
+
+		case NT_STATUS_NO_CALLBACK_ACTIVE:
+			return "NT_STATUS_NO_CALLBACK_ACTIVE";
+		break;
+
+		case NT_STATUS_LICENSE_QUOTA_EXCEEDED:
+			return "NT_STATUS_LICENSE_QUOTA_EXCEEDED";
+		break;
+
+		case NT_STATUS_PWD_TOO_SHORT:
+			return "NT_STATUS_PWD_TOO_SHORT";
+		break;
+
+		case NT_STATUS_PWD_TOO_RECENT:
+			return "NT_STATUS_PWD_TOO_RECENT";
+		break;
+
+		case NT_STATUS_PWD_HISTORY_CONFLICT:
+			return "NT_STATUS_PWD_HISTORY_CONFLICT";
+		break;
+
+		case NT_STATUS_PLUGPLAY_NO_DEVICE:
+			return "NT_STATUS_PLUGPLAY_NO_DEVICE";
+		break;
+
+		case NT_STATUS_UNSUPPORTED_COMPRESSION:
+			return "NT_STATUS_UNSUPPORTED_COMPRESSION";
+		break;
+
+		case NT_STATUS_INVALID_HW_PROFILE:
+			return "NT_STATUS_INVALID_HW_PROFILE";
+		break;
+
+		case NT_STATUS_INVALID_PLUGPLAY_DEVICE_PATH:
+			return "NT_STATUS_INVALID_PLUGPLAY_DEVICE_PATH";
+		break;
+
+		case NT_STATUS_DRIVER_ORDINAL_NOT_FOUND:
+			return "NT_STATUS_DRIVER_ORDINAL_NOT_FOUND";
+		break;
+
+		case NT_STATUS_DRIVER_ENTRYPOINT_NOT_FOUND:
+			return "NT_STATUS_DRIVER_ENTRYPOINT_NOT_FOUND";
+		break;
+
+		case NT_STATUS_RESOURCE_NOT_OWNED:
+			return "NT_STATUS_RESOURCE_NOT_OWNED";
+		break;
+
+		case NT_STATUS_TOO_MANY_LINKS:
+			return "NT_STATUS_TOO_MANY_LINKS";
+		break;
+
+		case NT_STATUS_QUOTA_LIST_INCONSISTENT:
+			return "NT_STATUS_QUOTA_LIST_INCONSISTENT";
+		break;
+
+		case NT_STATUS_FILE_IS_OFFLINE:
+			return "NT_STATUS_FILE_IS_OFFLINE";
+		break;
+
+		case NT_STATUS_DS_NO_MORE_RIDS:
+			return "NT_STATUS_DS_NO_MORE_RIDS";
+		break;
+
+		case NT_STATUS_NOT_A_REPARSE_POINT:
+			return "NT_STATUS_NOT_A_REPARSE_POINT";
+		break;
+
+		case NT_STATUS_NO_SUCH_JOB:
+			return "NT_STATUS_NO_SUCH_JOB";
+		break;
+
+/*		case NT_STATUS_RPC_PROTSEQ_NOT_SUPPORTED:
+			return "NT_STATUS_RPC_PROTSEQ_NOT_SUPPORTED";
+		break;*/
+
+		default:
+			return "(unknown)";
+	}
+}

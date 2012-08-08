@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbtool", "nbtool.vcproj", "{D6070334-3B97-484B-8973-74DAAC9B106A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dnstest", "dnstest.vcproj", "{F1AC37D7-94BD-47F9-BE12-ED658E8912A4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6070334-3B97-484B-8973-74DAAC9B106A} = {D6070334-3B97-484B-8973-74DAAC9B106A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbquery", "nbquery.vcproj", "{232BC789-9A57-4FC9-929A-6E028C7F3E54}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nbsniff", "nbsniff.vcproj", "{5ECF3637-DC20-48DE-8254-23BE756DC16C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dnsxss", "dnsxss.vcproj", "{0296800D-7780-4F4A-9BE6-E79E57A8D8A3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6070334-3B97-484B-8973-74DAAC9B106A} = {D6070334-3B97-484B-8973-74DAAC9B106A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dnslogger", "dnslogger.vcproj", "{456A0D87-F99D-4888-AF32-9D837C251D6C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dnscat", "dnscat.vcproj", "{1BA6FC66-F862-4E06-A913-CDD17F2774BF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D6070334-3B97-484B-8973-74DAAC9B106A} = {D6070334-3B97-484B-8973-74DAAC9B106A}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6070334-3B97-484B-8973-74DAAC9B106A}.Debug|Win32.ActiveCfg = Release|Win32
+		{D6070334-3B97-484B-8973-74DAAC9B106A}.Debug|Win32.Build.0 = Release|Win32
+		{D6070334-3B97-484B-8973-74DAAC9B106A}.Release|Win32.ActiveCfg = Release|Win32
+		{D6070334-3B97-484B-8973-74DAAC9B106A}.Release|Win32.Build.0 = Release|Win32
+		{F1AC37D7-94BD-47F9-BE12-ED658E8912A4}.Debug|Win32.ActiveCfg = Release|Win32
+		{F1AC37D7-94BD-47F9-BE12-ED658E8912A4}.Debug|Win32.Build.0 = Release|Win32
+		{F1AC37D7-94BD-47F9-BE12-ED658E8912A4}.Release|Win32.ActiveCfg = Release|Win32
+		{F1AC37D7-94BD-47F9-BE12-ED658E8912A4}.Release|Win32.Build.0 = Release|Win32
+		{232BC789-9A57-4FC9-929A-6E028C7F3E54}.Debug|Win32.ActiveCfg = Release|Win32
+		{232BC789-9A57-4FC9-929A-6E028C7F3E54}.Debug|Win32.Build.0 = Release|Win32
+		{232BC789-9A57-4FC9-929A-6E028C7F3E54}.Release|Win32.ActiveCfg = Release|Win32
+		{232BC789-9A57-4FC9-929A-6E028C7F3E54}.Release|Win32.Build.0 = Release|Win32
+		{5ECF3637-DC20-48DE-8254-23BE756DC16C}.Debug|Win32.ActiveCfg = Release|Win32
+		{5ECF3637-DC20-48DE-8254-23BE756DC16C}.Debug|Win32.Build.0 = Release|Win32
+		{5ECF3637-DC20-48DE-8254-23BE756DC16C}.Release|Win32.ActiveCfg = Release|Win32
+		{5ECF3637-DC20-48DE-8254-23BE756DC16C}.Release|Win32.Build.0 = Release|Win32
+		{0296800D-7780-4F4A-9BE6-E79E57A8D8A3}.Debug|Win32.ActiveCfg = Release|Win32
+		{0296800D-7780-4F4A-9BE6-E79E57A8D8A3}.Debug|Win32.Build.0 = Release|Win32
+		{0296800D-7780-4F4A-9BE6-E79E57A8D8A3}.Release|Win32.ActiveCfg = Release|Win32
+		{0296800D-7780-4F4A-9BE6-E79E57A8D8A3}.Release|Win32.Build.0 = Release|Win32
+		{456A0D87-F99D-4888-AF32-9D837C251D6C}.Debug|Win32.ActiveCfg = Release|Win32
+		{456A0D87-F99D-4888-AF32-9D837C251D6C}.Debug|Win32.Build.0 = Release|Win32
+		{456A0D87-F99D-4888-AF32-9D837C251D6C}.Release|Win32.ActiveCfg = Release|Win32
+		{456A0D87-F99D-4888-AF32-9D837C251D6C}.Release|Win32.Build.0 = Release|Win32
+		{1BA6FC66-F862-4E06-A913-CDD17F2774BF}.Debug|Win32.ActiveCfg = Release|Win32
+		{1BA6FC66-F862-4E06-A913-CDD17F2774BF}.Debug|Win32.Build.0 = Release|Win32
+		{1BA6FC66-F862-4E06-A913-CDD17F2774BF}.Release|Win32.ActiveCfg = Release|Win32
+		{1BA6FC66-F862-4E06-A913-CDD17F2774BF}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,44 @@
+svn (unreleased)
+o Fixed a bunch of compile warnings on cygwin
+o dnscat clients no longer crash (or behave oddly) if no DNS server can be
+  found (ie, /etc/resolv.conf doesn't exist or doesn't have what we need)
+o Move dnscat's signal handling and atexit() registration to after
+  initialization, which prevents dnscat from trying to 
+o Fixed a bug that would output the wrong sequence number for sequence number
+  mismatches (thanks to Kos for reporting this one)
+o When running Dnscat on Windows, calling the select() function when we only
+  have pipes to listen for would cause an error because pipes are polled
+  rather than selected. We now check for (and work around) this condition. 
+o Update the Windows shellcode to proper handle fields, whether or not they
+  exist. 
+o Updated the Windows shellcode (both standard and stager) to, once again, 
+  work properly.
+(r885)
+
+0.05alpha2 [2010-07-06]
+o Fixed a bugs where encoded packets' lengths would be one byte too long
+o Removed some debug output statements
+
+0.05alpha1 [2010-07-06]
+o Added 'staging' code -- will now serve file given by --stage argument in
+  TXT records
+o Added a 'session' field that is tyically randomized
+o Added an 'identifier' field that can be set to help identify connections
+  (payloads, for example, use the identifier field)
+o Significant refactoring, particularly the session code. The session code
+  is no longer tied to DNS functionality and can potentially be used by other
+  programs. 
+o Created three variations of shellcode:
+  - Standard Linux shellcode
+  - Standard Windows shellcode
+  - Stager Windows shellcode
+  These shellcodes are currently in a state of flux, and haven't been tested
+  as much as I would like.
+o Added --multi argument to servers, which allows a server to handle multiple
+  concurrent clients. 
+o Removed the requirement to use --domain as an argument if --dns is given.
+  This simplifies direct client->server (non-recursive) connections.
+
+0.04 [2010-02-20]
+o Basically a complete re-write
+
