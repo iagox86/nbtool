@@ -265,7 +265,7 @@ static void usage(char *program)
 {
 	fprintf(stderr, NAME", by Ron Bowes <ron@skullsecurity.net>\n");
 	fprintf(stderr, "\n");
-	fprintf(stderr, "%s [-t <test string>]\n", program);
+	fprintf(stderr, "%s [--payload <test string>]\n", program);
 	fprintf(stderr, " -a <address>\n");
 	fprintf(stderr, "    The address sent back to the user when an A request is made. Can be used\n");
 	fprintf(stderr, "    to disguise this as a legitimate DNS server. Default: 127.0.0.1.\n");
